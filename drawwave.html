@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<title>play eagle</title>
+<script>
+var context = new AudioContext();
+
+function playSound(audioBuffer) {
+  var source = context.createBufferSource(); 
+  source.buffer = audioBuffer;               
+  source.connect(context.destination);       
+  source.start(0);                           
+}
+
+/* https://commons.wikimedia.org/wiki/File:Booted_Eagle.ogg */
+loadEagle = () => {
+  fetch('eagle.wav')
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+    .then(playSound)
+    .catch(e => console.log(e))
+}
+loadEagle();
+</script>
