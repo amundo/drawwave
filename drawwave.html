@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <title>play eagle</title>
+<audio autoplay src=eagle.wav controls></audio>
 <script>
+
 var context = new AudioContext();
+var analyser = context.createAnalyser();
+  analyser.smoothingTimeConstant = .9;
+var audio = document.querySelector('audio');
+var raf;
 
-function playSound(audioBuffer) {
-  var source = context.createBufferSource(); 
-  source.buffer = audioBuffer;               
-  source.connect(context.destination);       
-  source.start(0);                           
+var init = () => {
+  var 
+    sample = new Float32Array(analyser.fftSize), 
+    source = context.createMediaElementSource(audio);
+
+  source.connect(analyser);
+
+  analyser.connect(context.destination);
+  draw()
 }
 
-/* https://commons.wikimedia.org/wiki/File:Booted_Eagle.ogg */
-loadEagle = () => {
-  fetch('eagle.wav')
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-    .then(playSound)
-    .catch(e => console.log(e))
+var times = (n,c) => {
+  var s = '';
+  var n = Math.log2(n / 10);
+  for(var i=0; i<n; i++){ s += c }
+  return s
 }
-loadEagle();
+
+var draw = () => {
+  var array = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteTimeDomainData(array);
+  console.log(times(array[0], '*'))
+  raf = requestAnimationFrame(draw)
+}
+
+addEventListener("load", init);
+audio.addEventListener("ended", () => {cancelAnimationFrame(raf)});
 </script>
