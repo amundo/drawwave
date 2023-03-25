@@ -4,7 +4,7 @@ I want to learn to plot soundwaves using:
 
 1. The Web Audio API (WAAPI, I guess?)
 2. SVG
-3. An moving window alogirthm to smooth the waveform 
+3. A moving window algorithm to smooth the waveform 
 
 There are a lot of good libraries for doing this but I want
 to learn how to do it for fun (and to improve my understanding
