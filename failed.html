@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<title>play eagle</title>
+<script>
+var context = new AudioContext();
+var analyser = context.createAnalyser();
+var sample = new Float32Array(analyser.fftSize); 
+
+var setUpBuffer = audioBuffer => {
+  var source = context.createBufferSource(); 
+  source.buffer = audioBuffer;               
+  return source;
+}
+
+var draw = source => {
+  source.connect(analyser);
+console.log(source);
+  analyser.connect(context.destination);
+  var drawRAF = requestAnimationFrame(draw);
+  analyser.getFloatTimeDomainData(sample);
+  for(var i = 0; i < analyser.fftSize; i++){
+    sample[i].length;
+  }
+  return source
+}
+
+var playSound = source => {
+  source.connect(context.destination); 
+  source.start(0);                           
+}
+
+/* https://commons.wikimedia.org/wiki/File:Booted_Eagle.ogg */
+loadEagle = () => {
+  fetch('eagle.wav')
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+    .then(setUpBuffer)
+    .then(draw)
+    .catch(e => console.log(e))
+}
+loadEagle();
+</script>
